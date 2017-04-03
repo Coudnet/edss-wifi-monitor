@@ -60,20 +60,20 @@ namespace Wi_Fi_Monitor
                             String profileXml = "";
                             String hex = "";
 
-                            InfoBlock.Text = "Connect...\n";
+                            ConsoleBlock.Text = "Connect...\n";
                             switch ((int)network.dot11DefaultAuthAlgorithm)
                             {
                                 case 1: // Open
-                                    InfoBlock.Text += "Open";
+                                    ConsoleBlock.Text += "Open";
                                     break;
                                 case 2: // SHARED_KEY
-                                    InfoBlock.Text += "SHARED";
+                                    ConsoleBlock.Text += "SHARED";
                                     break;
                                 case 3: // WEP
-                                    InfoBlock.Text += "Wep";
+                                    ConsoleBlock.Text += "Wep";
                                     break;
                                 case 4: // WPA_PSK
-                                    InfoBlock.Text += "WPA";
+                                    ConsoleBlock.Text += "WPA";
                                     strTemplate = Properties.Resources.WPAPSK;
 
                                     authentication = "WPAPSK";
@@ -91,13 +91,13 @@ namespace Wi_Fi_Monitor
                                     break;
 
                                 case 5: // WPA_NONE
-                                    InfoBlock.Text += "WPA_NONE";
+                                    ConsoleBlock.Text += "WPA_NONE";
                                     break;
                                 case 6: // RSNA
-                                    InfoBlock.Text += "RSNA";
+                                    ConsoleBlock.Text += "RSNA";
                                     break;
                                 case 7: // RSNA_PSK  
-                                    InfoBlock.Text += "WPA2PSK";
+                                    ConsoleBlock.Text += "WPA2PSK";
                                     strTemplate = Properties.Resources.WPA2PSK;
                                     authentication = "WPA2PSK";
                                     encryption = network.dot11DefaultCipherAlgorithm.ToString().Trim((char)0);
