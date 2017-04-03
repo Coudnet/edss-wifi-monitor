@@ -1,0 +1,19 @@
+<WLANProfile xmlns="http://www.microsoft.com/networking/WLAN/profile/v1">
+  <name>{0}</name>
+  <SSIDConfig>
+    <SSID>
+      <name>{0}</name>
+		</SSID>
+	</SSIDConfig>
+	<connectionType>ESS</connectionType>
+	<connectionMode>manual</connectionMode>
+	<MSM>
+		<security>
+			<authEncryption>
+        <authentication>{1}</authentication>
+        <encryption>{2}</encryption>
+				<useOneX>false</useOneX>
+			</authEncryption>
+		</security>
+	</MSM>
+</WLANProfile>
