@@ -102,5 +102,8 @@
     <Resource Include="Models\Resources\WPA2PSK.xml" />
     <Resource Include="Models\Resources\WPAPSK.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
