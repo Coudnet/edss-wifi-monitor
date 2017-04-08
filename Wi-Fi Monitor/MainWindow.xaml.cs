@@ -36,16 +36,16 @@ namespace Wi_Fi_Monitor
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            WiFiNetworks.Items.Clear();
             try
             {
+                View.Networks.Clear();
                 WriteConsoleBlock("Выполняю поиск сетей...");
-                View.Networks = Device.FindNetworks();
-                WriteConsoleBlock("Сети обнаружены...");
-                foreach (Wlan.WlanAvailableNetwork network in View.Networks)
+                var networks = Device.FindNetworks();
+                foreach (var network in networks)
                 {
-                    WiFiNetworks.Items.Add(System.Text.ASCIIEncoding.ASCII.GetString(network.dot11Ssid.SSID).Trim((char)0));
+                    View.Networks.Add(new Network(network));
                 }
+                WriteConsoleBlock("Сети обнаружены...");
             }
             catch(Exception err)
             {
@@ -54,9 +54,9 @@ namespace Wi_Fi_Monitor
 
         }
 
-        private void ConnectBtn_Click(object sender, RoutedEventArgs e)
+        private void ConnectButton_Click(object sender, RoutedEventArgs e)
         {
-            if (WiFiNetworks.SelectedItem == null)
+            if (View.SelectedNetwork == null)
             {
                 WriteConsoleBlock("Ошибка! Выберите сеть!");
             }
@@ -64,17 +64,13 @@ namespace Wi_Fi_Monitor
             {
                 try
                 {
-                    foreach(var network in View.Networks)
-                    {
-                        if(network.profileName.Equals(WiFiNetworks.SelectedItem))
-                        {
-                            WriteConsoleBlock("Подключаюсь...");
-                            EDSSDevice = new Device(network);
-                            WriteConsoleBlock("Подключено!");
-                            EDSSDevice.ErrorGet += WriteError;
-                            EDSSDevice.MessageGet += WriteMessage;
-                        }
-                    }
+                    WriteConsoleBlock("Подключаюсь...");
+                    EDSSDevice = new Device(View.SelectedNetwork);
+                    WriteConsoleBlock("Подключено!");
+                    EDSSDevice.ErrorGet += WriteError;
+                    EDSSDevice.MessageGet += WriteMessage;
+                    StartMeasureButton.IsEnabled = true;
+                    StopMeasureButton.IsEnabled = true;
                 }
                 catch(Exception err)
                 {

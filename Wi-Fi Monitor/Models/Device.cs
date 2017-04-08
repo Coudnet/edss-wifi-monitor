@@ -24,20 +24,20 @@ namespace Wi_Fi_Monitor.Models
         public event ErrorNotifyDelegate ErrorGet;
         public event MessageNotifyDelegate MessageGet;
 
-        public Device(Wlan.WlanAvailableNetwork network)
+        public Device(Network network)
         {
             WlanClient client = new WlanClient();
             WlanClient.WlanInterface wlanIface = client.Interfaces[0];
 
-            String strTemplate = Properties.Resources.WPA2PSK; ;
+            String strTemplate = Properties.Resources.WPA2PSK;
             String authentication = "WPA2PSK";
-            String encryption = network.dot11DefaultCipherAlgorithm.ToString().Trim((char)0); ;
+            String encryption = network.CipherAlgorithm;
             String key = "7822617735";
-            String profileXml = String.Format(strTemplate, network.profileName, authentication, key);
+            String profileXml = String.Format(strTemplate, network.ProfileName, authentication, key);
             String hex = "";
 
             wlanIface.SetProfile(Wlan.WlanProfileFlags.AllUser, profileXml, true);
-            wlanIface.Connect(Wlan.WlanConnectionMode.Profile, Wlan.Dot11BssType.Any, network.profileName);
+            wlanIface.Connect(Wlan.WlanConnectionMode.Profile, Wlan.Dot11BssType.Any, network.ProfileName);
         }
 
         public static ObservableCollection<Wlan.WlanAvailableNetwork> FindNetworks()
@@ -75,7 +75,7 @@ namespace Wi_Fi_Monitor.Models
             MessageGet("Измерение окончено");
         }
 
-        public void DoMeasure(object param)
+        private void DoMeasure(object param)
         {
             SynchronizationContext _context = (SynchronizationContext)param;
 

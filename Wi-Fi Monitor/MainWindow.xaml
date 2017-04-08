@@ -5,18 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Wi_Fi_Monitor"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="1024">
+        Title="MainWindow" Height="800" Width="1024">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Control.FontFamily" Value="Verdana" />
-            <Setter Property="Control.Background" Value="#c21800" />
+            <Setter Property="Control.Background" Value="#680C00" />
             <Setter Property="Control.Foreground" Value="White" />
             <Setter Property="Control.Margin" Value="10 0 10 0" />
+            <Setter Property="BorderThickness" Value="0, 0, 0, 0"/>
             <Setter Property="FontFamily" Value="Arial"></Setter>
         </Style>
     </Window.Resources>
 
-    <Grid Background="#222d32">
+    <Grid Background="#252526">
         <Grid.RowDefinitions>
             <RowDefinition Height="3*"></RowDefinition>
             <RowDefinition></RowDefinition>
@@ -27,50 +28,74 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="6*"></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-
-            <TextBlock 
-                Name="DimensionsBlock"
-                Grid.Column="0" 
-                Grid.Row="0" 
-                Background="#eee" 
-                Padding="10px 5px 10px 5px"
-                Margin="20 20 20 20">
-            </TextBlock>
-            <StackPanel Orientation="Vertical" Grid.Column="1" Margin="0 20 0 20">
-                <Button MaxHeight="40" MaxWidth="40" MinHeight="30" MinWidth="30">
-                    <Image></Image>
-                </Button>
-            </StackPanel>
-        </Grid>
-
+        <TextBlock Background="#2D2D30" 
+                   Margin="20" 
+                   Name="DimensionsBlock"
+                   Foreground="White"></TextBlock>
 
         <StackPanel
             Grid.Column="0"
             Grid.Row="1"
             Orientation="Horizontal"
             HorizontalAlignment="Center">
-            <Button Name="StartMeasureButton" Margin="0 0 10px 0" Content="НАЧАТЬ" MinWidth="100" MaxHeight="40" Click="StartMeasureButton_Click"></Button>
-            <Button Content="ЗАКОНЧИТЬ" MinWidth="100" MaxHeight="40" Name="StopMeasureButton" Click="StopMeasureButton_Click"></Button>
+            <Button Name="StartMeasureButton" 
+                    IsEnabled="False" 
+                    Margin="0 0 10px 0" 
+                    Content="НАЧАТЬ" 
+                    MinWidth="100" 
+                    MaxHeight="40" 
+                    Click="StartMeasureButton_Click"/>
+            <Button Content="ЗАКОНЧИТЬ" 
+                    IsEnabled="False" 
+                    MinWidth="100" 
+                    MaxHeight="40" 
+                    Name="StopMeasureButton" 
+                    Click="StopMeasureButton_Click"/>
         </StackPanel>
 
-        <StackPanel 
-            Grid.Column="1"
-            Grid.Row="0"
-            MaxWidth="500"
-            Margin="0 20 10 0">
-            <Button Height="40" Content="ПОИСК" Name="SearchButton" Click="SearchButton_Click"/>
-            <ScrollViewer  Background="#eee"  Height="125" Margin="10 20" >
-                <ListView Name="WiFiNetworks"></ListView>
+        <Grid Grid.Column="1"
+              Grid.Row="0"
+              Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <ScrollViewer Margin="0, 0, 0, 20">
+                <ListView Name="WiFiNetworks"
+                          Background="#2D2D30"
+                          BorderThickness="0, 0, 0, 0"
+                          Foreground="White"
+                          ItemsSource="{Binding Networks}"
+                          SelectedItem="{Binding SelectedNetwork}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="5" Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=SSID}" Margin="10"/>
+                                <TextBlock Text="{Binding Path=SignalQuality}" Margin="10" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </ScrollViewer>
+            <StackPanel Grid.Row="1"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                <Button 
+                    Name="SearchButton" 
+                    Content="Поиск"
+                    Click="SearchButton_Click"
+                    Width="100"/>
+
+                <Button
+                    Name="ConnectButton"
+                    Content="Подключиться"
+                    Click="ConnectButton_Click"
+                    Width="100"/>
+            </StackPanel>
             
-            <Button Height="40" Content="ПОДКЛЮЧИТЬСЯ" Name="ConnectBtn" Click="ConnectBtn_Click"/>
-        </StackPanel>
+
+        </Grid>
 
         <ScrollViewer
             Grid.Row="2" 

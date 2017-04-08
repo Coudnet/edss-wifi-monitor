@@ -7,12 +7,30 @@ using NativeWifi;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
+using Wi_Fi_Monitor.Models;
 
 namespace Wi_Fi_Monitor.Views
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        public ObservableCollection<Wlan.WlanAvailableNetwork> Networks { get; set; }
+        private Network selectedNetwork;
+
+        public ObservableCollection<Network> Networks { get; set; }
+
+        public Network SelectedNetwork
+        {
+            get { return selectedNetwork; }
+            set
+            {
+                selectedNetwork = value;
+                OnPropertyChanged("SelectedNetwork");
+            }
+        }
+
+        public MainViewModel()
+        {
+            Networks = new ObservableCollection<Network>();
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName]string prop = "")
