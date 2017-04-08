@@ -14,6 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using NativeWifi;
 using Wi_Fi_Monitor.Models;
+using Wi_Fi_Monitor.Views;
+using System.Threading;
 
 namespace Wi_Fi_Monitor
 {
@@ -22,19 +24,26 @@ namespace Wi_Fi_Monitor
     /// </summary>
     public partial class MainWindow : Window
     {
+        public MainViewModel View = new MainViewModel();
+
+        Device EDSSDevice = new Device();
+
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = View;
+            EDSSDevice.ErrorGet += WriteError;
+            EDSSDevice.MessageGet += WriteMessage;
         }
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
             WiFiNetworks.Items.Clear();
-            List<Wlan.WlanAvailableNetwork> networks = Device.FindNetworks();
-            foreach (Wlan.WlanAvailableNetwork network in networks)
-            {
-                WiFiNetworks.Items.Add(System.Text.ASCIIEncoding.ASCII.GetString(network.dot11Ssid.SSID).Trim((char)0));
+            View.Networks = Device.FindNetworks();
 
+            foreach (Wlan.WlanAvailableNetwork network in View.Networks)
+            {               
+                WiFiNetworks.Items.Add(System.Text.ASCIIEncoding.ASCII.GetString(network.dot11Ssid.SSID).Trim((char)0));
             }
         }
 
@@ -101,7 +110,7 @@ namespace Wi_Fi_Monitor
                                     strTemplate = Properties.Resources.WPA2PSK;
                                     authentication = "WPA2PSK";
                                     encryption = network.dot11DefaultCipherAlgorithm.ToString().Trim((char)0);
-                                    key = "76543210";
+                                    key = "00000000";
                                     profileXml = String.Format(strTemplate, profileName, authentication, key);
 
                                     wlanIface.SetProfile(Wlan.WlanProfileFlags.AllUser, profileXml, true);
@@ -119,6 +128,38 @@ namespace Wi_Fi_Monitor
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void StartMeasureButton_Click(object sender, RoutedEventArgs e)
+        {
+        
+            EDSSDevice.DimensionGet += this.WriteDimension;
+            EDSSDevice.StartMeasure();
+        }
+
+        private void StopMeasureButton_Click(object sender, RoutedEventArgs e)
+        {
+            EDSSDevice.StopMeasure();
+            EDSSDevice.DimensionGet -= this.WriteDimension;
+        }
+
+        private void WriteDimension(string value)
+        {
+            if (String.Equals(value, "null")) value = "отсутствует!";
+
+            DimensionsBlock.Text += String.Format("Значение {0}\n", value);
+        }
+
+        private void WriteMessage(string message)
+        {
+            DateTime localDate = DateTime.Now;
+            ConsoleBlock.Text += String.Format("{0}: {1}\n", localDate.ToLongTimeString(), message);
+        }
+
+        private void WriteError(string error)
+        {
+            DateTime localDate = DateTime.Now;
+            ConsoleBlock.Text += String.Format("{0}: {1}\n", localDate.ToLongTimeString(), error);
         }
     }
 }

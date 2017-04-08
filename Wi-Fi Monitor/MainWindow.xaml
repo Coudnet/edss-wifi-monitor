@@ -35,11 +35,10 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock 
-                Name="InfoBlock"
+                Name="DimensionsBlock"
                 Grid.Column="0" 
                 Grid.Row="0" 
                 Background="#eee" 
-                Text="Здесь будут данные"
                 Padding="10px 5px 10px 5px"
                 Margin="20 20 20 20">
             </TextBlock>
@@ -56,8 +55,8 @@
             Grid.Row="1"
             Orientation="Horizontal"
             HorizontalAlignment="Center">
-            <Button Margin="0 0 10px 0" Content="НАЧАТЬ" MinWidth="100" MaxHeight="40"></Button>
-            <Button Content="ЗАКОНЧИТЬ" MinWidth="100" MaxHeight="40"></Button>
+            <Button Name="StartMeasureButton" Margin="0 0 10px 0" Content="НАЧАТЬ" MinWidth="100" MaxHeight="40" Click="StartMeasureButton_Click"></Button>
+            <Button Content="ЗАКОНЧИТЬ" MinWidth="100" MaxHeight="40" Name="StopMeasureButton" Click="StopMeasureButton_Click"></Button>
         </StackPanel>
 
         <StackPanel 
@@ -66,18 +65,23 @@
             MaxWidth="500"
             Margin="0 20 10 0">
             <Button Height="40" Content="ПОИСК" Name="SearchButton" Click="SearchButton_Click"/>
-            <ListView Background="#eee"  MinHeight="125" Margin="10 20" Name="WiFiNetworks">
-
-            </ListView>
+            <ScrollViewer  Background="#eee"  Height="125" Margin="10 20" >
+                <ListView Name="WiFiNetworks"></ListView>
+            </ScrollViewer>
+            
             <Button Height="40" Content="ПОДКЛЮЧИТЬСЯ" Name="ConnectBtn" Click="ConnectBtn_Click"/>
         </StackPanel>
 
-        <TextBlock 
+        <ScrollViewer
             Grid.Row="2" 
-            Grid.ColumnSpan="2" 
-            Background="Black"
-            Name="ConsoleBlock">
-            
-        </TextBlock>
+            Grid.ColumnSpan="2">
+            <TextBlock 
+                Background="Black"
+                Name="ConsoleBlock"
+                Foreground="White"
+                >
+            </TextBlock>
+        </ScrollViewer>
+        
     </Grid>
 </Window>
