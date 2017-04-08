@@ -24,20 +24,38 @@ namespace Wi_Fi_Monitor.Models
         public event ErrorNotifyDelegate ErrorGet;
         public event MessageNotifyDelegate MessageGet;
 
+        public Device(Wlan.WlanAvailableNetwork network)
+        {
+            WlanClient client = new WlanClient();
+            WlanClient.WlanInterface wlanIface = client.Interfaces[0];
+
+            String strTemplate = Properties.Resources.WPA2PSK; ;
+            String authentication = "WPA2PSK";
+            String encryption = network.dot11DefaultCipherAlgorithm.ToString().Trim((char)0); ;
+            String key = "7822617735";
+            String profileXml = String.Format(strTemplate, network.profileName, authentication, key);
+            String hex = "";
+
+            wlanIface.SetProfile(Wlan.WlanProfileFlags.AllUser, profileXml, true);
+            wlanIface.Connect(Wlan.WlanConnectionMode.Profile, Wlan.Dot11BssType.Any, network.profileName);
+        }
+
         public static ObservableCollection<Wlan.WlanAvailableNetwork> FindNetworks()
         {
             WlanClient client = new WlanClient();
             var networks = new ObservableCollection<Wlan.WlanAvailableNetwork>();
 
-            foreach (WlanClient.WlanInterface wlanIface in client.Interfaces)
+            WlanClient.WlanInterface wlanIface = client.Interfaces[0]; //Получаем первый интерфейс, который связан с сетевой картой
+            if (wlanIface.InterfaceState == Wlan.WlanInterfaceState.Connected)
             {
+                throw new Exception("Интерфейс занят! Отключите все сети");
+            }
 
-                Wlan.WlanAvailableNetwork[] wlanBssEntries = wlanIface.GetAvailableNetworkList(0);
+            Wlan.WlanAvailableNetwork[] wlanBssEntries = wlanIface.GetAvailableNetworkList(Wlan.WlanGetAvailableNetworkFlags.IncludeAllAdhocProfiles);
 
-                foreach (Wlan.WlanAvailableNetwork network in wlanBssEntries)
-                {
-                    networks.Add(network);
-                }
+            foreach (Wlan.WlanAvailableNetwork network in wlanBssEntries)
+            {
+                networks.Add(network);
             }
 
             return networks;

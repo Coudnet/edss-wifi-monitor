@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <WLANProfile xmlns="http://www.microsoft.com/networking/WLAN/profile/v1">
-	<name>GoproNumber14</name>
+	<name>{0}</name>
 	<SSIDConfig>
 		<SSID>
 			<name>{0}</name>

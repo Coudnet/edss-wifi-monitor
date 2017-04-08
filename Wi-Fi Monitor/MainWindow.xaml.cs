@@ -26,108 +26,62 @@ namespace Wi_Fi_Monitor
     {
         public MainViewModel View = new MainViewModel();
 
-        Device EDSSDevice = new Device();
+        Device EDSSDevice;
 
         public MainWindow()
         {
             InitializeComponent();
             DataContext = View;
-            EDSSDevice.ErrorGet += WriteError;
-            EDSSDevice.MessageGet += WriteMessage;
         }
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
             WiFiNetworks.Items.Clear();
-            View.Networks = Device.FindNetworks();
-
-            foreach (Wlan.WlanAvailableNetwork network in View.Networks)
-            {               
-                WiFiNetworks.Items.Add(System.Text.ASCIIEncoding.ASCII.GetString(network.dot11Ssid.SSID).Trim((char)0));
+            try
+            {
+                WriteConsoleBlock("Выполняю поиск сетей...");
+                View.Networks = Device.FindNetworks();
+                WriteConsoleBlock("Сети обнаружены...");
+                foreach (Wlan.WlanAvailableNetwork network in View.Networks)
+                {
+                    WiFiNetworks.Items.Add(System.Text.ASCIIEncoding.ASCII.GetString(network.dot11Ssid.SSID).Trim((char)0));
+                }
             }
+            catch(Exception err)
+            {
+                WriteConsoleBlock(String.Format("Ошибка! {0}", err.Message));
+            }
+
         }
 
         private void ConnectBtn_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (WiFiNetworks.SelectedItem == null)
             {
-                WlanClient client = new WlanClient();
-                foreach (WlanClient.WlanInterface wlanIface in client.Interfaces)
+                WriteConsoleBlock("Ошибка! Выберите сеть!");
+            }
+            else
+            {
+                try
                 {
-                    Wlan.WlanAvailableNetwork[] wlanBssEntries = wlanIface.GetAvailableNetworkList(0);
-                    foreach (Wlan.WlanAvailableNetwork network in wlanBssEntries)
+                    foreach(var network in View.Networks)
                     {
-                        String profileName = System.Text.ASCIIEncoding.ASCII.GetString(network.dot11Ssid.SSID).Trim((char)0);
-
-                        // подключаемся именно к выбранной сети
-                        if (WiFiNetworks.SelectedItem.ToString().Equals(profileName)) //Text.Equals(profileName))
+                        if(network.profileName.Equals(WiFiNetworks.SelectedItem))
                         {
-                            String strTemplate = "";
-                            String authentication = "";
-                            String encryption = "";
-                            String key = "";
-                            String profileXml = "";
-                            String hex = "";
-
-                            ConsoleBlock.Text = "Connect...\n";
-                            switch ((int)network.dot11DefaultAuthAlgorithm)
-                            {
-                                case 1: // Open
-                                    ConsoleBlock.Text += "Open";
-                                    break;
-                                case 2: // SHARED_KEY
-                                    ConsoleBlock.Text += "SHARED";
-                                    break;
-                                case 3: // WEP
-                                    ConsoleBlock.Text += "Wep";
-                                    break;
-                                case 4: // WPA_PSK
-                                    ConsoleBlock.Text += "WPA";
-                                    strTemplate = Properties.Resources.WPAPSK;
-
-                                    authentication = "WPAPSK";
-
-                                    encryption = network.dot11DefaultCipherAlgorithm.ToString().Trim((char)0);
-
-                                    key = "0000000000";
-
-                                    profileXml = String.Format(strTemplate, profileName, authentication, encryption, key);
-
-                                    wlanIface.SetProfile(Wlan.WlanProfileFlags.AllUser, profileXml, true);
-                                    wlanIface.Connect(Wlan.WlanConnectionMode.Profile, Wlan.Dot11BssType.Any, profileName);
-
-
-                                    break;
-
-                                case 5: // WPA_NONE
-                                    ConsoleBlock.Text += "WPA_NONE";
-                                    break;
-                                case 6: // RSNA
-                                    ConsoleBlock.Text += "RSNA";
-                                    break;
-                                case 7: // RSNA_PSK  
-                                    ConsoleBlock.Text += "WPA2PSK";
-                                    strTemplate = Properties.Resources.WPA2PSK;
-                                    authentication = "WPA2PSK";
-                                    encryption = network.dot11DefaultCipherAlgorithm.ToString().Trim((char)0);
-                                    key = "00000000";
-                                    profileXml = String.Format(strTemplate, profileName, authentication, key);
-
-                                    wlanIface.SetProfile(Wlan.WlanProfileFlags.AllUser, profileXml, true);
-                                    wlanIface.Connect(Wlan.WlanConnectionMode.Profile, Wlan.Dot11BssType.Any, profileName);
-                                    break;
-
-                                default:
-                                    break;
-                            }
+                            WriteConsoleBlock("Подключаюсь...");
+                            EDSSDevice = new Device(network);
+                            WriteConsoleBlock("Подключено!");
+                            EDSSDevice.ErrorGet += WriteError;
+                            EDSSDevice.MessageGet += WriteMessage;
                         }
                     }
                 }
+                catch(Exception err)
+                {
+                    WriteConsoleBlock(String.Format("Ошибка! {0}", err.Message));
+                }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            
         }
 
         private void StartMeasureButton_Click(object sender, RoutedEventArgs e)
@@ -152,14 +106,18 @@ namespace Wi_Fi_Monitor
 
         private void WriteMessage(string message)
         {
-            DateTime localDate = DateTime.Now;
-            ConsoleBlock.Text += String.Format("{0}: {1}\n", localDate.ToLongTimeString(), message);
+            WriteConsoleBlock(message);
         }
 
         private void WriteError(string error)
         {
+            WriteConsoleBlock(String.Format("Ошибка! {0}", error));
+        }
+
+        private void WriteConsoleBlock(string msg)
+        {
             DateTime localDate = DateTime.Now;
-            ConsoleBlock.Text += String.Format("{0}: {1}\n", localDate.ToLongTimeString(), error);
+            ConsoleBlock.Text += String.Format("{0}: {1}\n", localDate.ToLongTimeString(), msg);
         }
     }
 }
