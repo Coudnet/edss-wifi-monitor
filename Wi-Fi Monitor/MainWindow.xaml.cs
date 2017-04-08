@@ -93,11 +93,9 @@ namespace Wi_Fi_Monitor
             EDSSDevice.DimensionGet -= this.WriteDimension;
         }
 
-        private void WriteDimension(string value)
+        private void WriteDimension(Dimension dim)
         {
-            if (String.Equals(value, "null")) value = "отсутствует!";
-
-            DimensionsBlock.Text += String.Format("Значение {0}\n", value);
+            DimensionsBlock.Text += String.Format("Значение {0}\n", dim.value);
         }
 
         private void WriteMessage(string message)

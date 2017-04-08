@@ -11,14 +11,14 @@ using System.Threading;
 
 namespace Wi_Fi_Monitor.Models
 {
-    public delegate void DimensionNotifyDelegate(string value);
+    public delegate void DimensionNotifyDelegate(Dimension value);
     public delegate void ErrorNotifyDelegate(string error);
     public delegate void MessageNotifyDelegate(string message);
 
     class Device
     {
         private volatile bool MeasurePermission = false;
-        private string Url = "http://127.0.0.1:8000/";        
+        private string Url = "http://192.168.4.1/dim";        
         private Thread thread;
         public event DimensionNotifyDelegate DimensionGet;
         public event ErrorNotifyDelegate ErrorGet;
@@ -32,7 +32,7 @@ namespace Wi_Fi_Monitor.Models
             String strTemplate = Properties.Resources.WPA2PSK;
             String authentication = "WPA2PSK";
             String encryption = network.CipherAlgorithm;
-            String key = "7822617735";
+            String key = "00000000";
             String profileXml = String.Format(strTemplate, network.ProfileName, authentication, key);
             String hex = "";
 
@@ -112,7 +112,7 @@ namespace Wi_Fi_Monitor.Models
         private void OnDimensionGet(object param)
         {
             if (param != null)
-                if(DimensionGet != null) DimensionGet((string)param);
+                if(DimensionGet != null) DimensionGet(new Dimension((string)param));
         }
 
         private void OnMessageGet(object param)
@@ -125,6 +125,19 @@ namespace Wi_Fi_Monitor.Models
         {
             if (param != null)
                 if(ErrorGet != null) ErrorGet((string)param);
+        }
+    }
+
+    public class Dimension
+    {
+        public string value;
+        public string time;
+
+        public Dimension(string val)
+        {
+            DateTime localDate = DateTime.Now;
+            time = localDate.ToLongTimeString();
+            value = val;
         }
     }
 
