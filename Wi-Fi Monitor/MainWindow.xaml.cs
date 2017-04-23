@@ -16,6 +16,9 @@ using NativeWifi;
 using Wi_Fi_Monitor.Models;
 using Wi_Fi_Monitor.Views;
 using System.Threading;
+using System.IO;
+using System.Windows.Forms;
+
 
 namespace Wi_Fi_Monitor
 {
@@ -25,14 +28,18 @@ namespace Wi_Fi_Monitor
     public partial class MainWindow : Window
     {
         public MainViewModel View = new MainViewModel();
-
+        public string pass;
         Device EDSSDevice;
+
+ 
 
         public MainWindow()
         {
             InitializeComponent();
             DataContext = View;
         }
+
+
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
@@ -64,8 +71,11 @@ namespace Wi_Fi_Monitor
             {
                 try
                 {
+                    PassForm passform = new PassForm();
+                    passform.Owner = this;
+                    passform.Show();
                     WriteConsoleBlock("Подключаюсь...");
-                    EDSSDevice = new Device(View.SelectedNetwork);
+                    EDSSDevice = new Device(View.SelectedNetwork, pass);
                     WriteConsoleBlock("Подключено!");
                     EDSSDevice.ErrorGet += WriteError;
                     EDSSDevice.MessageGet += WriteMessage;
@@ -89,8 +99,8 @@ namespace Wi_Fi_Monitor
 
         private void StopMeasureButton_Click(object sender, RoutedEventArgs e)
         {
-            EDSSDevice.StopMeasure();
-            EDSSDevice.DimensionGet -= this.WriteDimension;
+           EDSSDevice.StopMeasure();
+           EDSSDevice.DimensionGet -= this.WriteDimension;
         }
 
         private void WriteDimension(Dimension dim)
@@ -112,6 +122,29 @@ namespace Wi_Fi_Monitor
         {
             DateTime localDate = DateTime.Now;
             ConsoleBlock.Text += String.Format("{0}: {1}\n", localDate.ToLongTimeString(), msg);
+        }
+
+        private void Save_btn_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFile1 = new SaveFileDialog();
+            saveFile1.DefaultExt = "*.txt";
+            saveFile1.Filter = "Text files|*.txt";
+            if (saveFile1.ShowDialog() == System.Windows.Forms.DialogResult.OK &&
+                saveFile1.FileName.Length > 0)
+            {
+                using (StreamWriter sw = new StreamWriter(saveFile1.FileName, true))
+                {
+                    sw.WriteLine(DimensionsBlock.Text);
+                    sw.Close();
+                    WriteConsoleBlock("Данные сохранены в " + saveFile1.FileName);
+                }
+            }
+        }
+
+        private void New_measure_btn_Click(object sender, RoutedEventArgs e)
+        {
+            DimensionsBlock.Text = "";
+            WriteConsoleBlock("Начато новае измерение");
         }
     }
 }

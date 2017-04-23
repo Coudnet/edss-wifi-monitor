@@ -50,7 +50,7 @@
                     MinWidth="100" 
                     MaxHeight="40" 
                     Name="StopMeasureButton" 
-                    Click="StopMeasureButton_Click"/>
+                    Click="StopMeasureButton_Click" RenderTransformOrigin="0.5,0.87"/>
         </StackPanel>
 
         <Grid Grid.Column="1"
@@ -93,7 +93,7 @@
                     Click="ConnectButton_Click"
                     Width="100"/>
             </StackPanel>
-            
+
 
         </Grid>
 
@@ -107,6 +107,8 @@
                 >
             </TextBlock>
         </ScrollViewer>
-        
+        <Button x:Name="Save_btn" Content="Сохранить&#xD;&#xA;" Grid.Column="1" HorizontalAlignment="Left" Margin="263.2,37.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="101" Height="39" Click="Save_btn_Click" VerticalContentAlignment="Bottom"/>
+        <Button x:Name="New_measure_btn" Content="Начать новое&#xD;&#xA;  измерение" Grid.Column="1" HorizontalAlignment="Left" Margin="142.2,37.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="101" Height="39" Click="New_measure_btn_Click"/>
+
     </Grid>
 </Window>

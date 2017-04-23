@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Net;
 using System.IO;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace Wi_Fi_Monitor.Models
 {
@@ -23,8 +24,9 @@ namespace Wi_Fi_Monitor.Models
         public event DimensionNotifyDelegate DimensionGet;
         public event ErrorNotifyDelegate ErrorGet;
         public event MessageNotifyDelegate MessageGet;
+        
 
-        public Device(Network network)
+        public Device(Network network, string pass)
         {
             WlanClient client = new WlanClient();
             WlanClient.WlanInterface wlanIface = client.Interfaces[0];
@@ -32,7 +34,7 @@ namespace Wi_Fi_Monitor.Models
             String strTemplate = Properties.Resources.WPA2PSK;
             String authentication = "WPA2PSK";
             String encryption = network.CipherAlgorithm;
-            String key = "00000000";
+            String key = pass;//"ZBao2Caa";
             String profileXml = String.Format(strTemplate, network.ProfileName, authentication, key);
             String hex = "";
 
@@ -126,6 +128,8 @@ namespace Wi_Fi_Monitor.Models
             if (param != null)
                 if(ErrorGet != null) ErrorGet((string)param);
         }
+
+
     }
 
     public class Dimension
@@ -139,6 +143,8 @@ namespace Wi_Fi_Monitor.Models
             time = localDate.ToLongTimeString();
             value = val;
         }
+
     }
+
 
 }
