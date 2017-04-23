@@ -104,6 +104,8 @@
                 Background="Black"
                 Name="ConsoleBlock"
                 Foreground="White"
+                FontSize="15"
+                Padding="10"
                 >
             </TextBlock>
         </ScrollViewer>
