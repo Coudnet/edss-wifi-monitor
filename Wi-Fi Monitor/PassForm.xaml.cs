@@ -21,26 +21,27 @@ namespace Wi_Fi_Monitor
  
     public partial class PassForm : Window
     {
-    
+
         public PassForm()
         {
             InitializeComponent();
         }
 
-
+        public string Data
+        {
+            get
+            {
+                return Password_box.Text;
+            }
+        }
         private void Enter_btn_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow main = this.Owner as MainWindow;
-            if (main != null)
-            {
-                main.pass = Password_box.Text;
-            }
             this.Close();
         }
 
-        private void Exit_btn_Click(object sender, RoutedEventArgs e)
+        private void Password_TextChanged(object sender, TextChangedEventArgs e)
         {
-            this.Close();
+
         }
     }
 }

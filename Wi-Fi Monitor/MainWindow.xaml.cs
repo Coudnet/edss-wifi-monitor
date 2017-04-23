@@ -72,8 +72,7 @@ namespace Wi_Fi_Monitor
                 try
                 {
                     PassForm passform = new PassForm();
-                    passform.Owner = this;
-                    passform.Show();
+                    passform.ShowDialog();
                     WriteConsoleBlock("Подключаюсь...");
                     EDSSDevice = new Device(View.SelectedNetwork, pass);
                     WriteConsoleBlock("Подключено!");
