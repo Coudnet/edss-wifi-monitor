@@ -113,6 +113,7 @@ namespace Wi_Fi_Monitor
         private void WriteDimension(Dimension dim)
         {
             DimensionsBlock.Text += String.Format("Значение {0}\n", dim.value);
+            DimensionsBlockScroll.ScrollToBottom();
         }
 
         private void WriteMessage(string message)
@@ -129,6 +130,7 @@ namespace Wi_Fi_Monitor
         {
             DateTime localDate = DateTime.Now;
             ConsoleBlock.Text += String.Format("{0}: {1}\n", localDate.ToLongTimeString(), msg);
+            ConsoleBlockScroll.ScrollToBottom();
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)

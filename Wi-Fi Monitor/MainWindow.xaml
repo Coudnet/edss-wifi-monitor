@@ -6,16 +6,6 @@
         xmlns:local="clr-namespace:Wi_Fi_Monitor"
         mc:Ignorable="d"
         Title="MainWindow" Height="800" Width="1024">
-    <Window.Resources>
-        <Style TargetType="Button">
-            <Setter Property="Control.FontFamily" Value="Verdana" />
-            <Setter Property="Control.Background" Value="#FF553C39" />
-            <Setter Property="Control.Foreground" Value="White" />
-            <Setter Property="Control.Margin" Value="10 0 10 0" />
-            <Setter Property="BorderThickness" Value="0, 0, 0, 0"/>
-            <Setter Property="FontFamily" Value="Arial"></Setter>
-        </Style>
-    </Window.Resources>
 
     <Grid Background="#252526">
         <Grid.RowDefinitions>
@@ -28,10 +18,13 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <ScrollViewer Margin="20">
+        <ScrollViewer Name="DimensionsBlockScroll"
+                      Margin="20">
+            
             <TextBlock Background="#2D2D30" 
                    Name="DimensionsBlock"
                    Foreground="White"></TextBlock>
+            
         </ScrollViewer>
         
         <StackPanel
@@ -84,7 +77,8 @@
                           BorderThickness="0, 0, 0, 0"
                           Foreground="White"
                           ItemsSource="{Binding Networks}"
-                          SelectedItem="{Binding SelectedNetwork}">
+                          SelectedItem="{Binding SelectedNetwork}"
+                          VirtualizingPanel.IsVirtualizing="True">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Margin="5" Orientation="Horizontal">
@@ -121,6 +115,7 @@
         </Grid>
 
         <ScrollViewer
+            Name="ConsoleBlockScroll"
             Grid.Row="2" 
             Grid.ColumnSpan="2">
             <TextBlock 
