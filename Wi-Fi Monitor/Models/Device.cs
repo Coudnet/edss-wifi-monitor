@@ -19,14 +19,13 @@ namespace Wi_Fi_Monitor.Models
     class Device
     {
         private volatile bool MeasurePermission = false;
-        private string Url = "http://192.168.4.1/dim";        
+        private string Url = "http://192.168.4.1/dim";
         private Thread thread;
         public event DimensionNotifyDelegate DimensionGet;
         public event ErrorNotifyDelegate ErrorGet;
         public event MessageNotifyDelegate MessageGet;
-        
 
-        public Device(Network network, string pass)
+        public static void Connect(Network network, string pass)
         {
             WlanClient client = new WlanClient();
             WlanClient.WlanInterface wlanIface = client.Interfaces[0];
@@ -34,12 +33,12 @@ namespace Wi_Fi_Monitor.Models
             String strTemplate = Properties.Resources.WPA2PSK;
             String authentication = "WPA2PSK";
             String encryption = network.CipherAlgorithm;
-            String key = pass;//"ZBao2Caa";
-            String profileXml = String.Format(strTemplate, network.ProfileName, authentication, key);
+            String key = pass;
+            String profileXml = String.Format(strTemplate, network.SSID, authentication, key);
             String hex = "";
 
             wlanIface.SetProfile(Wlan.WlanProfileFlags.AllUser, profileXml, true);
-            wlanIface.Connect(Wlan.WlanConnectionMode.Profile, Wlan.Dot11BssType.Any, network.ProfileName);
+            wlanIface.Connect(Wlan.WlanConnectionMode.Profile, Wlan.Dot11BssType.Any, network.SSID);
         }
 
         public static ObservableCollection<Wlan.WlanAvailableNetwork> FindNetworks()
@@ -55,12 +54,21 @@ namespace Wi_Fi_Monitor.Models
 
             Wlan.WlanAvailableNetwork[] wlanBssEntries = wlanIface.GetAvailableNetworkList(Wlan.WlanGetAvailableNetworkFlags.IncludeAllAdhocProfiles);
 
-            foreach (Wlan.WlanAvailableNetwork network in wlanBssEntries)
+            IEnumerable<Wlan.WlanAvailableNetwork> sortedNetworks = wlanBssEntries.OrderByDescending(s => s.wlanSignalQuality);
+            foreach (Wlan.WlanAvailableNetwork network in sortedNetworks)
             {
                 networks.Add(network);
             }
 
             return networks;
+        }
+
+        public static bool IsConnectedToNetwork()
+        {
+            WlanClient client = new WlanClient();
+            WlanClient.WlanInterface wlanIface = client.Interfaces[0]; //Получаем первый интерфейс, который связан с сетевой картой
+            if (wlanIface.InterfaceState == Wlan.WlanInterfaceState.Connected) return true;
+            return false;
         }
 
         public void StartMeasure()
@@ -91,6 +99,7 @@ namespace Wi_Fi_Monitor.Models
                     string value = "";
 
                     var req = (HttpWebRequest)WebRequest.Create(Url);
+                    req.Timeout = 500;
                     HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
 
                     using (StreamReader stream = new StreamReader(
@@ -98,6 +107,8 @@ namespace Wi_Fi_Monitor.Models
                     {
                         value = stream.ReadToEnd();
                     }
+
+                    resp.Close();
 
                     _context.Send(OnMessageGet, "Успешно");
                     _context.Send(OnDimensionGet, value);

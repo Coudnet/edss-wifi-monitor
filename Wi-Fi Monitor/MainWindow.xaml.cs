@@ -31,8 +31,6 @@ namespace Wi_Fi_Monitor
         public string pass;
         Device EDSSDevice;
 
- 
-
         public MainWindow()
         {
             InitializeComponent();
@@ -52,6 +50,7 @@ namespace Wi_Fi_Monitor
                 {
                     View.Networks.Add(new Network(network));
                 }
+              
                 WriteConsoleBlock("Сети обнаружены...");
             }
             catch(Exception err)
@@ -71,15 +70,24 @@ namespace Wi_Fi_Monitor
             {
                 try
                 {
-                    PassForm passform = new PassForm();
-                    passform.ShowDialog();
+                    if (View.SelectedNetwork.SecurityEnabled)
+                    {
+                        PassForm passform = new PassForm();
+                        passform.ShowDialog();
+                        pass = passform.Data;
+                    }
                     WriteConsoleBlock("Подключаюсь...");
-                    EDSSDevice = new Device(View.SelectedNetwork, pass);
+                    Device.Connect(View.SelectedNetwork, pass);
+
+                    EDSSDevice = new Device();
                     WriteConsoleBlock("Подключено!");
+
                     EDSSDevice.ErrorGet += WriteError;
                     EDSSDevice.MessageGet += WriteMessage;
                     StartMeasureButton.IsEnabled = true;
                     StopMeasureButton.IsEnabled = true;
+                    SaveButton.IsEnabled = true;
+                    CleanButton.IsEnabled = true;
                 }
                 catch(Exception err)
                 {
@@ -123,7 +131,7 @@ namespace Wi_Fi_Monitor
             ConsoleBlock.Text += String.Format("{0}: {1}\n", localDate.ToLongTimeString(), msg);
         }
 
-        private void Save_btn_Click(object sender, RoutedEventArgs e)
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFile1 = new SaveFileDialog();
             saveFile1.DefaultExt = "*.txt";
@@ -140,10 +148,31 @@ namespace Wi_Fi_Monitor
             }
         }
 
-        private void New_measure_btn_Click(object sender, RoutedEventArgs e)
+        private void CleanButton_Click(object sender, RoutedEventArgs e)
         {
             DimensionsBlock.Text = "";
-            WriteConsoleBlock("Начато новае измерение");
+            WriteConsoleBlock("Очищено");
+        }
+
+        private void AlreadyReadyButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (!Device.IsConnectedToNetwork()) throw new Exception("Вы не подключены!");
+                EDSSDevice = new Device();
+                WriteConsoleBlock("Подключено!");
+
+                EDSSDevice.ErrorGet += WriteError;
+                EDSSDevice.MessageGet += WriteMessage;
+                StartMeasureButton.IsEnabled = true;
+                StopMeasureButton.IsEnabled = true;
+                SaveButton.IsEnabled = true;
+                CleanButton.IsEnabled = true;
+            }
+            catch (Exception err)
+            {
+                WriteConsoleBlock(String.Format("Ошибка! {0}", err.Message));
+            }
         }
     }
 }

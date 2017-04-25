@@ -15,6 +15,7 @@ namespace Wi_Fi_Monitor.Models
         private uint signalQuality;
         private string cipherAlgorithm;
         private string ssid;
+        private bool securityEnabled;
 
         public string ProfileName
         {
@@ -55,12 +56,23 @@ namespace Wi_Fi_Monitor.Models
             }
         }
 
+        public bool SecurityEnabled
+        {
+            get { return securityEnabled; }
+            set
+            {
+                securityEnabled = value;
+                OnPropertyChanged("SecurityEnabled");
+            }
+        }
+
         public Network(Wlan.WlanAvailableNetwork network)
         {
             SSID = System.Text.ASCIIEncoding.ASCII.GetString(network.dot11Ssid.SSID).Trim((char)0);
             ProfileName = network.profileName;
             SignalQuality = network.wlanSignalQuality;
             CipherAlgorithm = network.dot11DefaultCipherAlgorithm.ToString().Trim((char)0);
+            SecurityEnabled = network.securityEnabled;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
