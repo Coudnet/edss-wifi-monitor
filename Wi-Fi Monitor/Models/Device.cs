@@ -97,7 +97,8 @@ namespace Wi_Fi_Monitor.Models
                 try
                 {
                     string value = "";
-
+                    int i = 1000;
+                    string valueDim = "";
                     var req = (HttpWebRequest)WebRequest.Create(Url);
                     req.Timeout = 500;
                     HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
@@ -106,19 +107,26 @@ namespace Wi_Fi_Monitor.Models
                          resp.GetResponseStream(), Encoding.UTF8))
                     {
                         value = stream.ReadToEnd();
+                        while (value != "/")
+                        {
+                            valueDim.Insert(0, value);
+                            value = stream.ReadToEnd();
+                            i -= 5;
+                            Thread.Sleep(5);
+                        }
                     }
 
                     resp.Close();
 
                     _context.Send(OnMessageGet, "Успешно");
-                    _context.Send(OnDimensionGet, value);
-                    
+                    _context.Send(OnDimensionGet, valueDim);
+                    Thread.Sleep(i);
                 }
                 catch (Exception err)
                 {
                     _context.Send(OnErrorGet, "Ошибка");
-                }
-                Thread.Sleep(1000);
+                    Thread.Sleep(1000);
+                }             
             } 
         }
 

@@ -29,6 +29,7 @@ namespace Wi_Fi_Monitor
     {
         public MainViewModel View = new MainViewModel();
         public string pass;
+        List<Dimension> dimGlobal = new List<Dimension>();
         Device EDSSDevice;
 
         public MainWindow()
@@ -42,7 +43,7 @@ namespace Wi_Fi_Monitor
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
             try
-            {
+            {                
                 View.Networks.Clear();
                 WriteConsoleBlock("Выполняю поиск сетей...");
                 var networks = Device.FindNetworks();
@@ -112,6 +113,7 @@ namespace Wi_Fi_Monitor
 
         private void WriteDimension(Dimension dim)
         {
+            dimGlobal.Add(dim);
             DimensionsBlock.Text += String.Format("Значение {0}\n", dim.value);
             DimensionsBlockScroll.ScrollToBottom();
         }
@@ -143,7 +145,10 @@ namespace Wi_Fi_Monitor
             {
                 using (StreamWriter sw = new StreamWriter(saveFile1.FileName, true))
                 {
-                    sw.WriteLine(DimensionsBlock.Text);
+                    foreach (var element in dimGlobal)
+                    {
+                        sw.WriteLine(element.time + " " + element.value + "\n");
+                    }
                     sw.Close();
                     WriteConsoleBlock("Данные сохранены в " + saveFile1.FileName);
                 }
@@ -152,6 +157,7 @@ namespace Wi_Fi_Monitor
 
         private void CleanButton_Click(object sender, RoutedEventArgs e)
         {
+            dimGlobal = null;
             DimensionsBlock.Text = "";
             WriteConsoleBlock("Очищено");
         }
