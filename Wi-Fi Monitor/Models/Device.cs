@@ -82,6 +82,7 @@ namespace Wi_Fi_Monitor.Models
         {
             MeasurePermission = false;
             thread.Join();
+           
             MessageGet("Измерение окончено");
         }
 
@@ -90,43 +91,51 @@ namespace Wi_Fi_Monitor.Models
             SynchronizationContext _context = (SynchronizationContext)param;
 
             _context.Send(OnMessageGet, "Измерение началось...");
-
+            String valueDim = "";
+            int i = 1000;
             while (MeasurePermission)
             {
                 _context.Send(OnMessageGet, "Получаю значение...");
                 try
                 {
-                    string value = "";
-                    int i = 1000;
-                    string valueDim = "";
+                    string value = "";                    
+                   
                     var req = (HttpWebRequest)WebRequest.Create(Url);
-                    req.Timeout = 500;
+                    req.Timeout = 10000;
                     HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
 
                     using (StreamReader stream = new StreamReader(
                          resp.GetResponseStream(), Encoding.UTF8))
                     {
                         value = stream.ReadToEnd();
-                        while (value != "/")
-                        {
-                            valueDim.Insert(0, value);
-                            value = stream.ReadToEnd();
-                            i -= 5;
-                            Thread.Sleep(5);
-                        }
+
                     }
-
+                    //_context.Send(OnMessageGet, value);
+                    //_context.Send(OnMessageGet, valueDim);
                     resp.Close();
+                    if(value != "/" && value != "")
+                    {
+                        valueDim += value;
+                        Thread.Sleep(100);
+                    }
+                    else
+                    {
+                        _context.Send(OnDimensionGet, valueDim);
+                        valueDim = "";
+                        _context.Send(OnMessageGet, "Успешно");
+                        Thread.Sleep(1000);
 
-                    _context.Send(OnMessageGet, "Успешно");
-                    _context.Send(OnDimensionGet, valueDim);
-                    Thread.Sleep(i);
+                    }
+                   // _context.Send(OnMessageGet, "Успешно");
+                  
+                    
                 }
                 catch (Exception err)
                 {
-                    _context.Send(OnErrorGet, "Ошибка");
+                    _context.Send(OnErrorGet, String.Format("Ошибка. {0}", err.Message));
                     Thread.Sleep(1000);
-                }             
+               }
+                
             } 
         }
 
