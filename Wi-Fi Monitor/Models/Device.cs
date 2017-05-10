@@ -35,7 +35,6 @@ namespace Wi_Fi_Monitor.Models
             String encryption = network.CipherAlgorithm;
             String key = pass;
             String profileXml = String.Format(strTemplate, network.SSID, authentication, key);
-            String hex = "";
 
             wlanIface.SetProfile(Wlan.WlanProfileFlags.AllUser, profileXml, true);
             wlanIface.Connect(Wlan.WlanConnectionMode.Profile, Wlan.Dot11BssType.Any, network.SSID);
@@ -66,9 +65,24 @@ namespace Wi_Fi_Monitor.Models
         public static bool IsConnectedToNetwork()
         {
             WlanClient client = new WlanClient();
-            WlanClient.WlanInterface wlanIface = client.Interfaces[0]; //Получаем первый интерфейс, который связан с сетевой картой
+            WlanClient.WlanInterface wlanIface = client.Interfaces[0];
             if (wlanIface.InterfaceState == Wlan.WlanInterfaceState.Connected) return true;
             return false;
+        }
+
+        public async Task<bool> IsDeviceAvailable()
+        {
+            try
+            {
+                var req = (HttpWebRequest)WebRequest.Create(Url);
+                req.Timeout = 10000;
+                HttpWebResponse resp = (HttpWebResponse) await req.GetResponseAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
         }
 
         public void StartMeasure()

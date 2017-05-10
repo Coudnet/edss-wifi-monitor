@@ -182,5 +182,7 @@ namespace Wi_Fi_Monitor
                 WriteConsoleBlock(String.Format("Ошибка! {0}", err.Message));
             }
         }
+
+        
     }
 }
