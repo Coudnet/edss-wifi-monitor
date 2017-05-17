@@ -18,7 +18,7 @@ using Wi_Fi_Monitor.Views;
 using System.Threading;
 using System.IO;
 using System.Windows.Forms;
-
+using System.Configuration;
 
 namespace Wi_Fi_Monitor
 {
@@ -43,7 +43,8 @@ namespace Wi_Fi_Monitor
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
             try
-            {                
+            {
+                WriteConsoleBlock(ConfigurationManager.AppSettings["server"]);
                 View.Networks.Clear();
                 WriteConsoleBlock("Выполняю поиск сетей...");
                 var networks = Device.FindNetworks();
@@ -183,6 +184,10 @@ namespace Wi_Fi_Monitor
             }
         }
 
-        
+        private void SettinBtn_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsForm settings = new SettingsForm();
+            settings.ShowDialog();
+        }
     }
 }

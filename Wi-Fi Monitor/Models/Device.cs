@@ -9,21 +9,24 @@ using System.Net;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+using System.Configuration;
+using System.Globalization;
 
 namespace Wi_Fi_Monitor.Models
 {
     public delegate void DimensionNotifyDelegate(Dimension value);
     public delegate void ErrorNotifyDelegate(string error);
     public delegate void MessageNotifyDelegate(string message);
+    
 
     class Device
     {
-        private volatile bool MeasurePermission = false;
-        private string Url = "http://192.168.4.1/dim";
+        public Settings settings = new Settings();
+        private volatile bool MeasurePermission = false;     
         private Thread thread;
         public event DimensionNotifyDelegate DimensionGet;
         public event ErrorNotifyDelegate ErrorGet;
-        public event MessageNotifyDelegate MessageGet;
+        public event MessageNotifyDelegate MessageGet;       
 
         public static void Connect(Network network, string pass)
         {
@@ -74,7 +77,7 @@ namespace Wi_Fi_Monitor.Models
         {
             try
             {
-                var req = (HttpWebRequest)WebRequest.Create(Url);
+                var req = (HttpWebRequest)WebRequest.Create(settings.url);
                 req.Timeout = 10000;
                 HttpWebResponse resp = (HttpWebResponse) await req.GetResponseAsync();
                 return true;
@@ -87,15 +90,17 @@ namespace Wi_Fi_Monitor.Models
 
         public void StartMeasure()
         {
+            
             MeasurePermission = true;
             thread = new Thread(this.DoMeasure);
+            thread.IsBackground = true;
             thread.Start(SynchronizationContext.Current);
         }
 
         public void StopMeasure()
         {
             MeasurePermission = false;
-            thread.Join();
+            thread.Abort();
            
             MessageGet("Измерение окончено");
         }
@@ -114,8 +119,8 @@ namespace Wi_Fi_Monitor.Models
                 {
                     string value = "";                    
                    
-                    var req = (HttpWebRequest)WebRequest.Create(Url);
-                    req.Timeout = 10000;
+                    var req = (HttpWebRequest)WebRequest.Create(settings.url);
+                    req.Timeout = settings.timeout;
                     HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
 
                     using (StreamReader stream = new StreamReader(
@@ -124,8 +129,8 @@ namespace Wi_Fi_Monitor.Models
                         value = stream.ReadToEnd();
 
                     }
-                    //_context.Send(OnMessageGet, value);
-                    //_context.Send(OnMessageGet, valueDim);
+ 
+
                     resp.Close();
                     if(value != "/" && value != "")
                     {
@@ -137,17 +142,16 @@ namespace Wi_Fi_Monitor.Models
                         _context.Send(OnDimensionGet, valueDim);
                         valueDim = "";
                         _context.Send(OnMessageGet, "Успешно");
-                        Thread.Sleep(1000);
+                        Thread.Sleep(settings.freq);
 
                     }
-                   // _context.Send(OnMessageGet, "Успешно");
-                  
+                   
                     
                 }
                 catch (Exception err)
                 {
                     _context.Send(OnErrorGet, String.Format("Ошибка. {0}", err.Message));
-                    Thread.Sleep(1000);
+                    Thread.Sleep(settings.freq);
                }
                 
             } 
@@ -170,6 +174,10 @@ namespace Wi_Fi_Monitor.Models
             if (param != null)
                 if(ErrorGet != null) ErrorGet((string)param);
         }
+        public void NewSettings()
+        {
+            settings = new Settings();
+        }
 
 
     }
@@ -184,6 +192,22 @@ namespace Wi_Fi_Monitor.Models
             DateTime localDate = DateTime.Now;
             time = localDate.ToLongTimeString();
             value = val;
+        }
+
+    }
+
+    public class Settings
+    {
+        public int freq;
+        public int timeout;
+        public string url;
+
+        public Settings()
+        {
+            freq = int.Parse(ConfigurationManager.AppSettings["freq"]);
+            freq = int.Parse(ConfigurationManager.AppSettings["timeout"]);
+            url = ConfigurationManager.AppSettings["server"];
+
         }
 
     }

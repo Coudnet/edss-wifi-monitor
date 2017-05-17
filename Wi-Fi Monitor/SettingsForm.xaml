@@ -1,0 +1,32 @@
+﻿<Window x:Class="Wi_Fi_Monitor.SettingsForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Wi_Fi_Monitor"
+        mc:Ignorable="d"
+        Title="SettingsForm" Height="300" Width="300">
+    <Grid HorizontalAlignment="Left" Height="190" Margin="10,10,0,0" VerticalAlignment="Top" Width="280">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="30*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="111*"/>
+            <ColumnDefinition Width="169*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="IP" VerticalAlignment="Top" Width="27"/>
+        <TextBox x:Name="IPBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="24.8,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBlock HorizontalAlignment="Left" Margin="10,9.8,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="1" Width="94"><Run Text="Часто"/><Run Text="та"/><Run Text=" сигнала"/></TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="10,10.6,0,0" TextWrapping="Wrap" Text="ОО" VerticalAlignment="Top" Grid.Row="2" Width="67"/>
+        <TextBox x:Name="FreqBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="24.8,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Grid.Row="1"/>
+        <TextBox x:Name="TimeoutBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="24.8,3.6,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Grid.Row="2"/>
+        <Button x:Name="SaveBtn" Content="Сохранить" HorizontalAlignment="Left" Height="32" Margin="49.8,49.133,0,-53.933" VerticalAlignment="Top" Width="95" Grid.Column="1" Grid.Row="6" Click="SaveBtn_Click"/>
+        <Button x:Name="CloseBtn" Grid.ColumnSpan="2" Content="Отмена" HorizontalAlignment="Left" Height="32" Margin="23,48.8,0,-53.6" Grid.Row="6" VerticalAlignment="Top" Width="93" Click="CloseBtn_Click"/>
+    </Grid>
+</Window>

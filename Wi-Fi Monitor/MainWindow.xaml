@@ -20,13 +20,13 @@
 
         <ScrollViewer Name="DimensionsBlockScroll"
                       Margin="20">
-            
+
             <TextBlock Background="#2D2D30" 
                    Name="DimensionsBlock"
                    Foreground="White"></TextBlock>
-            
+
         </ScrollViewer>
-        
+
         <StackPanel
             Grid.Column="0"
             Grid.Row="1"
@@ -39,21 +39,21 @@
                     MinWidth="100" 
                     MaxHeight="40" 
                     Click="StartMeasureButton_Click"/>
-            
+
             <Button Content="Закончить" 
                     IsEnabled="False" 
                     MinWidth="100" 
                     MaxHeight="40" 
                     Name="StopMeasureButton" 
                     Click="StopMeasureButton_Click"/>
-            
+
             <Button x:Name="SaveButton" 
                     Content="Сохранить" 
                     MinWidth="100" 
                     MaxHeight="40" 
                     Click="SaveButton_Click"
                     IsEnabled="False"/>
-            
+
             <Button x:Name="CleanButton" 
                     Content="Очистить" 
                     MinWidth="100" 
@@ -103,7 +103,7 @@
                     Content="Подключиться"
                     Click="ConnectButton_Click"
                     Width="100"/>
-                
+
                 <Button
                     Name="AlreadyReadyButton"
                     Content="Уже подключен"
@@ -127,5 +127,6 @@
                 >
             </TextBlock>
         </ScrollViewer>
+        <Button x:Name="SettinBtn" Content="Настройки" Grid.Column="1" HorizontalAlignment="Left" Margin="85.2,54.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="103" Height="45" Click="SettinBtn_Click"/>
     </Grid>
 </Window>
