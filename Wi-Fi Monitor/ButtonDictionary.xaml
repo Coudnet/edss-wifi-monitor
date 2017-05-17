@@ -3,10 +3,11 @@
                     xmlns:local="clr-namespace:Wi_Fi_Monitor">
     <Style TargetType="Button">
         <Setter Property="Control.FontFamily" Value="Verdana" />
-        <Setter Property="Control.Background" Value="#FF553C39" />
+        <Setter Property="Control.Background" Value="#343435" />
         <Setter Property="Control.Foreground" Value="White" />
         <Setter Property="Control.Margin" Value="10 0 10 0" />
         <Setter Property="BorderThickness" Value="0, 0, 0, 0"/>
-        <Setter Property="FontFamily" Value="Arial"></Setter>
+        <Setter Property="FontFamily" Value="Calibri"></Setter>
+        <Setter Property="FontSize" Value="15"></Setter>
     </Style>
 </ResourceDictionary>

@@ -38,13 +38,10 @@ namespace Wi_Fi_Monitor
             DataContext = View;
         }
 
-
-
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
             try
-            {
-                WriteConsoleBlock(ConfigurationManager.AppSettings["server"]);
+            {                
                 View.Networks.Clear();
                 WriteConsoleBlock("Выполняю поиск сетей...");
                 var networks = Device.FindNetworks();
@@ -115,7 +112,8 @@ namespace Wi_Fi_Monitor
         private void WriteDimension(Dimension dim)
         {
             dimGlobal.Add(dim);
-            DimensionsBlock.Text += String.Format("Значение {0}\n", dim.value);
+            if(dim.value != "" && dim.value != "/") DimensionsBlock.Text += String.Format("Значение {0}\n", dim.value);
+
             DimensionsBlockScroll.ScrollToBottom();
         }
 
@@ -158,7 +156,7 @@ namespace Wi_Fi_Monitor
 
         private void CleanButton_Click(object sender, RoutedEventArgs e)
         {
-            dimGlobal = null;
+            dimGlobal.Clear();
             DimensionsBlock.Text = "";
             WriteConsoleBlock("Очищено");
         }
@@ -189,5 +187,6 @@ namespace Wi_Fi_Monitor
             SettingsForm settings = new SettingsForm();
             settings.ShowDialog();
         }
+
     }
 }

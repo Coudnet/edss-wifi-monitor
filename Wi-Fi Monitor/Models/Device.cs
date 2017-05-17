@@ -111,7 +111,6 @@ namespace Wi_Fi_Monitor.Models
 
             _context.Send(OnMessageGet, "Измерение началось...");
             String valueDim = "";
-            int i = 1000;
             while (MeasurePermission)
             {
                 _context.Send(OnMessageGet, "Получаю значение...");
@@ -143,7 +142,6 @@ namespace Wi_Fi_Monitor.Models
                         valueDim = "";
                         _context.Send(OnMessageGet, "Успешно");
                         Thread.Sleep(settings.freq);
-
                     }
                    
                     
@@ -174,6 +172,7 @@ namespace Wi_Fi_Monitor.Models
             if (param != null)
                 if(ErrorGet != null) ErrorGet((string)param);
         }
+
         public void NewSettings()
         {
             settings = new Settings();
@@ -205,7 +204,7 @@ namespace Wi_Fi_Monitor.Models
         public Settings()
         {
             freq = int.Parse(ConfigurationManager.AppSettings["freq"]);
-            freq = int.Parse(ConfigurationManager.AppSettings["timeout"]);
+            timeout = int.Parse(ConfigurationManager.AppSettings["timeout"]);
             url = ConfigurationManager.AppSettings["server"];
 
         }
