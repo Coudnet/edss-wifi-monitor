@@ -31,13 +31,13 @@
         </Grid.ColumnDefinitions>
         
         
-        <TextBlock Text="IP"/>
+        <TextBlock Text="URL"/>
         <TextBox x:Name="IPBox" Grid.Column="1"/>
 
-        <TextBlock Grid.Row="1" Text="Частота сигнала"></TextBlock>
+        <TextBlock Grid.Row="1" Text="Интервал"></TextBlock>
         <TextBox x:Name="FreqBox" Grid.Column="1" Grid.Row="1"/>
 
-        <TextBlock Text="ОО" Grid.Row="2"/>
+        <TextBlock Text="Время ожидания" Grid.Row="2"/>
         <TextBox x:Name="TimeoutBox" Grid.Column="1" Grid.Row="2"/>
         
         <Button x:Name="CloseBtn" Content="Отмена" Grid.Row="3" Height="30"  Click="CloseBtn_Click"/>
