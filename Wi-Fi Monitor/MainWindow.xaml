@@ -127,6 +127,7 @@
                 >
             </TextBlock>
         </ScrollViewer>
-        <Button x:Name="SettinBtn" Content="Настройки" HorizontalAlignment="Right" Margin="50" Grid.Column="1" Grid.Row="1" Width="130" Height="40" Click="SettinBtn_Click"/>
+        <Button x:Name="SettinBtn" Content="Настройки"  Grid.Column="1" Grid.Row="1" Width="130" Height="40" Click="SettinBtn_Click"/>
+        <Button x:Name="ClearNetworksBtn" Content="Очистить" HorizontalAlignment="Right" Margin="50" Grid.Column="1" Grid.Row="1" Width="130" Height="40" Click="ClearNetworksBtn_Click"/>  
     </Grid>
 </Window>

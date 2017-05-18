@@ -188,5 +188,9 @@ namespace Wi_Fi_Monitor
             settings.ShowDialog();
         }
 
+        private void ClearNetworksBtn_Click(object sender, RoutedEventArgs e)
+        {
+            View.Networks.Clear();
+        }
     }
 }
